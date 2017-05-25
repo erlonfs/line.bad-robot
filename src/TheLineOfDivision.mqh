@@ -317,14 +317,12 @@ public:
 			ClearDraw(_maxima);
 			ClearDraw(_minima);
 
-			bool isNewCandle = IsNewCandle();
-
-			if (IsBuyCondition(isNewCandle)) {
+			if (IsBuyCondition(GetIsNewCandle())) {
 				VerifyStrategy(ORDER_TYPE_BUY);
 				Draw(_maxima, _corBuy);
 			}
 
-			if (IsSellCondition(isNewCandle)) {
+			if (IsSellCondition(GetIsNewCandle())) {
 				VerifyStrategy(ORDER_TYPE_SELL);
 				Draw(_minima, _corSell);
 			}

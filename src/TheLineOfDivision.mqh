@@ -8,9 +8,9 @@
 
 #include <Trade\Trade.mqh>
 #include <Trade\PositionInfo.mqh>
-#include <Framework\Base.mqh>
+#include <BadRobot.Framework\BadRobot.mqh>
 
-class TheLineOfDivision : public Base
+class TheLineOfDivision : public BadRobot
 {
 private:
 	//Price   		
@@ -310,7 +310,7 @@ public:
 
 	void Execute() {
 
-		if(!Base::ExecuteBase()) return;
+		if(!BadRobot::ExecuteBase()) return;
 
 		if (GetBuffers()) {
 
@@ -329,14 +329,13 @@ public:
 
 			SetInfo("COMPRA " + (string)_maxima + " VENDA " + (string)_minima +
 				"\nTOLERANCIA " + (string)_tolerancia + "PTS QTD " + (string)_qtdToques + " CANDLES");
-			ShowInfo();
 
 		}
 
 	};
 	
 	void ExecuteOnTrade(){
-      Base::ExecuteOnTradeBase();
+      BadRobot::ExecuteOnTradeBase();
    };
 
 };

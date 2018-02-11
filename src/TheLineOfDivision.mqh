@@ -128,13 +128,14 @@ private:
 			if (isFound && auxMaxCount > maxCount) {
 				maxCount = auxMaxCount;
 				linha = auxMax;
-				isMatch = true;
+				isMatch = true;				
 			}
 
 		}
 
 		if (isMatch) {
 			_maxima = linha + _tolerancia;
+			ShowMessage("Linha de compra encontrada " + (string)_maxima);
 		}
 
 		return isMatch;
@@ -183,13 +184,14 @@ private:
 			if (isFound && auxMinCount > minCount) {
 				minCount = auxMinCount;
 				linha = auxMin;
-				isMatch = true;
+				isMatch = true;			
 			}
 
 		}
 
 		if (isMatch) {
 			_minima = linha - _tolerancia;
+			ShowMessage("Linha de venda encontrada " + (string)_minima);
 		}
 
 		return isMatch;

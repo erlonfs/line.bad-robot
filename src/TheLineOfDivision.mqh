@@ -48,14 +48,12 @@ private:
 		if (order == ORDER_TYPE_BUY) {
 
 			double _entrada = _maxima + GetSpread();
-			double _auxStopGain = NormalizeDouble((_entrada + GetStopGain()), _Digits);
-			double _auxStopLoss = NormalizeDouble((_entrada - GetStopLoss()), _Digits);
 
 			if (GetPrice().last >= _entrada) {
 
 				if (!HasPositionOpen()) {
 					_waitBuy = false;
-					Buy(_entrada, _auxStopLoss, _auxStopGain, getRobotName());
+					Buy(_entrada);
 				}
 
 			}
@@ -68,14 +66,12 @@ private:
 		if (order == ORDER_TYPE_SELL) {
 
 			double _entrada = _minima - GetSpread();
-			double _auxStopGain = NormalizeDouble((_entrada - GetStopGain()), _Digits);
-			double _auxStopLoss = NormalizeDouble((_entrada + GetStopLoss()), _Digits);
 
 			if (GetPrice().last <= _entrada) {
 
 				if (!HasPositionOpen()) {
 					_waitSell = false;
-					Sell(_entrada, _auxStopLoss, _auxStopGain, getRobotName());
+					Sell(_entrada);
 				}
 
 			}

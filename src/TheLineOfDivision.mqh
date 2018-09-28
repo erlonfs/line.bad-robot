@@ -8,9 +8,9 @@
 
 #include <Trade\Trade.mqh>
 #include <Trade\PositionInfo.mqh>
-#include <BadRobot.Framework\BadRobot.mqh>
+#include <BadRobot.Framework\BadRobotPrompt.mqh>
 
-class TheLineOfDivision : public BadRobot
+class TheLineOfDivision : public BadRobotPrompt
 {
 private:
 	//Price   		
@@ -49,7 +49,7 @@ private:
 
 			double _entrada = _maxima + GetSpread();
 
-			if (GetPrice().last >= _entrada) {
+			if (GetLastPrice() >= _entrada) {
 
 				if (!HasPositionOpen()) {
 					_waitBuy = false;
@@ -67,7 +67,7 @@ private:
 
 			double _entrada = _minima - GetSpread();
 
-			if (GetPrice().last <= _entrada) {
+			if (GetLastPrice() <= _entrada) {
 
 				if (!HasPositionOpen()) {
 					_waitSell = false;
@@ -117,7 +117,7 @@ private:
 				}
 
 				isFound = auxMaxCount >= _qtdToques;
-				isFound = isFound && GetPrice().last <= auxMax;
+				isFound = isFound && GetLastPrice() <= auxMax;
 
 			}
 
@@ -173,7 +173,7 @@ private:
 				}
 
 				isFound = auxMinCount >= _qtdToques;
-				isFound = isFound && GetPrice().last >= auxMin;
+				isFound = isFound && GetLastPrice() >= auxMin;
 
 			}
 
@@ -297,6 +297,8 @@ public:
 	};
 
 	void Load() {
+	
+	   LoadBase();
 
 		_eMALongHandle = iMA(GetSymbol(), GetPeriod(), _eMALongPeriod, 0, MODE_EMA, PRICE_CLOSE);
 		_eMAShortHandle = iMA(GetSymbol(), GetPeriod(), _eMAShortPeriod, 0, MODE_EMA, PRICE_CLOSE);
@@ -308,19 +310,19 @@ public:
 
 	void Execute() {
 
-		if(!BadRobot::ExecuteBase()) return;
+		if(!ExecuteBase()) return;
 
 		if (GetBuffers()) {
 
 			ClearDraw(_maxima);
 			ClearDraw(_minima);
 
-			if (IsBuyCondition(GetIsNewCandle())) {
+			if (IsBuyCondition(IsNewCandle())) {
 				VerifyStrategy(ORDER_TYPE_BUY);
 				Draw(_maxima, _corBuy);
 			}
 
-			if (IsSellCondition(GetIsNewCandle())) {
+			if (IsSellCondition(IsNewCandle())) {
 				VerifyStrategy(ORDER_TYPE_SELL);
 				Draw(_minima, _corSell);
 			}
@@ -333,7 +335,7 @@ public:
 	};
 	
 	void ExecuteOnTrade(){
-      BadRobot::ExecuteOnTradeBase();
+      ExecuteOnTradeBase();
    };
 
 };

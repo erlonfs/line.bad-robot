@@ -23,7 +23,7 @@ private:
 
 	int _qtdCandles;
 	int _qtdToques;
-	double _tolerancia;
+	int _tolerancia;
 	bool _waitBuy;
 	bool _waitSell;
 
@@ -47,7 +47,7 @@ private:
 
 		if (order == ORDER_TYPE_BUY) {
 
-			double _entrada = _maxima + GetSpread();
+			double _entrada = _maxima + ToPoints(GetSpread());
 
 			if (GetLastPrice() >= _entrada) {
 
@@ -65,7 +65,7 @@ private:
 
 		if (order == ORDER_TYPE_SELL) {
 
-			double _entrada = _minima - GetSpread();
+			double _entrada = _minima - ToPoints(GetSpread());
 
 			if (GetLastPrice() <= _entrada) {
 
@@ -108,11 +108,11 @@ private:
 				if (_rates[j].high == auxMax) {
 					auxMaxCount++;
 				}
-				else if (_rates[j].high <= auxMax + _tolerancia && _rates[j].high >= auxMax - _tolerancia) {
+				else if (_rates[j].high <= auxMax + ToPoints(_tolerancia) && _rates[j].high >= auxMax - ToPoints(_tolerancia)) {
 					auxMaxCount++;
 				}
 
-				if (_rates[j].high > auxMax + _tolerancia) {
+				if (_rates[j].high > auxMax + ToPoints(_tolerancia)) {
 					auxMaxCount = 0;
 				}
 
@@ -130,8 +130,8 @@ private:
 		}
 
 		if (isMatch) {
-			_maxima = linha + _tolerancia;
-			ShowMessage("Linha de compra encontrada " + (string)_maxima);
+			_maxima = linha + ToPoints(_tolerancia);
+			ShowMessage("Linha de compra encontrada " + DoubleToString(_maxima, _Digits));
 		}
 
 		return isMatch;
@@ -164,11 +164,11 @@ private:
 				if (_rates[j].low == auxMin) {
 					auxMinCount++;
 				}
-				else if (_rates[j].low <= auxMin + _tolerancia && _rates[j].low >= auxMin - _tolerancia) {
+				else if (_rates[j].low <= auxMin + ToPoints(_tolerancia) && _rates[j].low >= auxMin - ToPoints(_tolerancia)) {
 					auxMinCount++;
 				}
 
-				if (_rates[j].low < auxMin - _tolerancia) {
+				if (_rates[j].low < auxMin - ToPoints(_tolerancia)) {
 					auxMinCount = 0;
 				}
 
@@ -186,8 +186,8 @@ private:
 		}
 
 		if (isMatch) {
-			_minima = linha - _tolerancia;
-			ShowMessage("Linha de venda encontrada " + (string)_minima);
+			_minima = linha - ToPoints(_tolerancia);
+			ShowMessage("Linha de venda encontrada " + DoubleToString(_minima, _Digits));
 		}
 
 		return isMatch;
@@ -260,8 +260,8 @@ public:
 		_qtdToques = qtd;
 	}
 
-	void SetTolerancia(double valor) {
-		_tolerancia = valor;
+	void SetTolerancia(int value) {
+		_tolerancia = value;
 	}
 
 	void SetColor(color cor) {
@@ -307,36 +307,49 @@ public:
 			Alert("Erro ao criar indicadores: erro ", GetLastError(), "!");
 		}
 	};
+	
+   void UnLoad(const int reason)
+	{
+      UnLoadBase(reason);
+	}; 	
 
 	void Execute() {
 
 		if(!ExecuteBase()) return;
 
-		if (GetBuffers()) {
-
+		if (GetBuffers()) 
+		{
 			ClearDraw(_maxima);
 			ClearDraw(_minima);
 
-			if (IsBuyCondition(IsNewCandle())) {
+			if (IsBuyCondition(IsNewCandle())) 
+			{
 				VerifyStrategy(ORDER_TYPE_BUY);
 				Draw(_maxima, _corBuy);
 			}
 
-			if (IsSellCondition(IsNewCandle())) {
+			if (IsSellCondition(IsNewCandle())) 
+			{
 				VerifyStrategy(ORDER_TYPE_SELL);
 				Draw(_minima, _corSell);
 			}
 
-			SetInfo("COMPRA " + (string)_maxima + " VENDA " + (string)_minima +
-				"\nTOLERANCIA " + (string)_tolerancia + "PTS QTD " + (string)_qtdToques + " CANDLES");
+			SetInfo("COMPRA " + DoubleToString(_maxima, _Digits) + " VENDA " + DoubleToString(_minima, _Digits) +
+				"\nTOLERANCIA " + DoubleToString(ToPoints(_tolerancia), _Digits) + "PTS QTD " + (string)_qtdToques + " CANDLES");
 
 		}
 
 	};
 	
-	void ExecuteOnTrade(){
+	void ExecuteOnTrade()
+	{
       ExecuteOnTradeBase();
    };
+   
+   void ChartEvent(const int id, const long& lparam, const double& dparam, const string& sparam)
+   {
+      ChartEventBase(id, lparam, dparam, sparam);
+   }
 
 };
 

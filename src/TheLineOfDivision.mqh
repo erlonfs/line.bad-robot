@@ -296,26 +296,20 @@ public:
 		_corSell = cor;
 	};
 
-	void Load() {
+	int OnInitHandler() {
 	
-	   LoadBase();
-
 		_eMALongHandle = iMA(GetSymbol(), GetPeriod(), _eMALongPeriod, 0, MODE_EMA, PRICE_CLOSE);
 		_eMAShortHandle = iMA(GetSymbol(), GetPeriod(), _eMAShortPeriod, 0, MODE_EMA, PRICE_CLOSE);
 
 		if (_eMALongHandle < 0 || _eMAShortHandle < 0) {
 			Alert("Erro ao criar indicadores: erro ", GetLastError(), "!");
 		}
+		
+		return (INIT_SUCCEEDED);
+		
 	};
-	
-   void UnLoad(const int reason)
-	{
-      UnLoadBase(reason);
-	}; 	
 
-	void Execute() {
-
-		if(!ExecuteBase()) return;
+	void OnTickHandler() {
 
 		if (GetBuffers()) 
 		{
@@ -340,16 +334,6 @@ public:
 		}
 
 	};
-	
-	void ExecuteOnTrade()
-	{
-      ExecuteOnTradeBase();
-   };
-   
-   void ChartEvent(const int id, const long& lparam, const double& dparam, const string& sparam)
-   {
-      ChartEventBase(id, lparam, dparam, sparam);
-   }
 
 };
 
